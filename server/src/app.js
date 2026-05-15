@@ -7,6 +7,8 @@ const topupRoutes = require("./routes/topup");
 const walletRoutes = require("./routes/wallet");
 const transactionRoutes = require("./routes/transaction");
 const withdrawRoutes = require("./routes/withdraw");
+const testRoutes = require("./routes/apiarie");
+const paymentRoutes = require("./routes/payment");
 
 const app = express();
 
@@ -34,6 +36,8 @@ app.use("/api/topup", topupRoutes);
 app.use("/api/wallet", walletRoutes);
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/withdraw", withdrawRoutes);
+app.use("/api/apiarie", testRoutes);
+app.use("/api/payment", paymentRoutes);
 
 app.get("/api/health", (req, res) => res.json({ status: "OK" }));
 

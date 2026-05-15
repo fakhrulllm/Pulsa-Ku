@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import api from '../../api/axios'
-import Sidebar from '../../components/Sidebar'
-import Header from '../../components/Header'
+import Layout from '../../components/Layout'
 import toast from 'react-hot-toast'
+import { Inbox, ArrowUpRight, ArrowDownLeft } from 'lucide-react'
 
 export default function Wallet() {
   const [balance, setBalance] = useState(0)
@@ -47,118 +47,123 @@ export default function Wallet() {
     }
   }
 
+  const inputClass = 'w-full border border-gray-200 dark:border-blue-900/40 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm bg-gray-50 dark:bg-blue-950/40 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-blue-300/30'
+  const labelClass = 'text-sm font-medium text-gray-700 dark:text-blue-200 mb-1 block'
+
   return (
-    <div className="flex bg-gray-50 min-h-screen">
-      <Sidebar />
-      <div className="flex-1 ml-64 flex flex-col">
-        <Header />
-        <main className="flex-1 p-6">
-          <div className="max-w-4xl mx-auto">
-            <h1 className="text-2xl font-bold text-gray-900 mb-6">Wallet Saya</h1>
+    <Layout>
+      <div className="max-w-4xl mx-auto space-y-6">
+        <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">Wallet Saya</h1>
 
-            {/* Balance Card */}
-            <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-8 text-white mb-6 shadow-lg">
-              <p className="text-blue-100 text-sm mb-2">Saldo Tersedia</p>
-              <p className="text-4xl font-bold mb-6">
-                {loading ? '...' : formatRupiah(balance)}
-              </p>
-              <button
-                onClick={() => setShowWithdraw(!showWithdraw)}
-                className="bg-white text-blue-600 px-5 py-2 rounded-xl font-semibold text-sm hover:bg-blue-50 transition-colors"
-              >
-                🏦 Tarik Saldo
-              </button>
-            </div>
+        <div className="bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl p-6 md:p-8 text-white shadow-lg">
+          <p className="text-blue-200 text-sm mb-2">Saldo Tersedia</p>
+          <p className="text-3xl md:text-4xl font-bold mb-6">
+            {loading ? '...' : formatRupiah(balance)}
+          </p>
+          <button
+            onClick={() => setShowWithdraw(!showWithdraw)}
+            className="bg-white text-blue-600 px-5 py-2 rounded-xl font-semibold text-sm hover:bg-blue-50 transition-colors"
+          >
+            Tarik Saldo
+          </button>
+        </div>
 
-            {/* Withdraw Form */}
-            {showWithdraw && (
-              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-6">
-                <h2 className="font-semibold text-gray-800 mb-4">Form Penarikan Saldo</h2>
-                <form onSubmit={handleWithdraw} className="space-y-4">
-                  <div>
-                    <label className="text-sm text-gray-600 mb-1 block">Jumlah Penarikan</label>
-                    <input
-                      type="number"
-                      placeholder="Minimal Rp 50.000"
-                      value={withdrawForm.amount}
-                      onChange={(e) => setWithdrawForm({ ...withdrawForm, amount: e.target.value })}
-                      className="w-full border rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm text-gray-600 mb-1 block">Nama Bank</label>
-                    <select
-                      value={withdrawForm.bank_name}
-                      onChange={(e) => setWithdrawForm({ ...withdrawForm, bank_name: e.target.value })}
-                      className="w-full border rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                      required
-                    >
-                      <option value="">Pilih Bank</option>
-                      {['BCA', 'BNI', 'BRI', 'Mandiri', 'BSI', 'DANA', 'OVO', 'GoPay'].map((b) => (
-                        <option key={b} value={b}>{b}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="text-sm text-gray-600 mb-1 block">Nomor Rekening / Akun</label>
-                    <input
-                      type="text"
-                      placeholder="Masukkan nomor rekening"
-                      value={withdrawForm.bank_account}
-                      onChange={(e) => setWithdrawForm({ ...withdrawForm, bank_account: e.target.value })}
-                      className="w-full border rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                      required
-                    />
-                  </div>
-                  <div className="flex gap-3">
-                    <button type="submit" className="flex-1 bg-blue-600 text-white py-2.5 rounded-xl font-semibold text-sm hover:bg-blue-700">
-                      Ajukan Penarikan
-                    </button>
-                    <button type="button" onClick={() => setShowWithdraw(false)} className="flex-1 border border-gray-200 text-gray-600 py-2.5 rounded-xl font-semibold text-sm hover:bg-gray-50">
-                      Batal
-                    </button>
-                  </div>
-                </form>
+        {showWithdraw && (
+          <div className="bg-white dark:bg-[#0d1526] rounded-2xl border border-gray-100 dark:border-blue-900/30 shadow-sm p-5 md:p-6">
+            <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Form Penarikan Saldo</h2>
+            <form onSubmit={handleWithdraw} className="space-y-4">
+              <div>
+                <label htmlFor="withdraw-amount" className={labelClass}>Jumlah Penarikan</label>
+                <input
+                  id="withdraw-amount"
+                  name="amount"
+                  type="number"
+                  placeholder="Minimal Rp 50.000"
+                  value={withdrawForm.amount}
+                  onChange={(e) => setWithdrawForm({ ...withdrawForm, amount: e.target.value })}
+                  className={inputClass}
+                  required
+                />
               </div>
-            )}
-
-            {/* History */}
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm">
-              <div className="p-6 border-b border-gray-100">
-                <h2 className="font-semibold text-gray-800">Riwayat Saldo</h2>
-              </div>
-              {loading ? (
-                <div className="p-6 text-center text-gray-400">Memuat...</div>
-              ) : history.length === 0 ? (
-                <div className="p-10 text-center">
-                  <p className="text-4xl mb-3">📭</p>
-                  <p className="text-gray-400">Belum ada riwayat saldo</p>
-                </div>
-              ) : (
-                <div className="divide-y divide-gray-50">
-                  {history.map((log) => (
-                    <div key={log.id} className="flex items-center justify-between px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-9 h-9 rounded-full flex items-center justify-center text-lg ${log.type === 'credit' ? 'bg-green-50' : 'bg-red-50'}`}>
-                          {log.type === 'credit' ? '⬆️' : '⬇️'}
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-gray-800">{log.description}</p>
-                          <p className="text-xs text-gray-400">{new Date(log.created_at).toLocaleDateString('id-ID')}</p>
-                        </div>
-                      </div>
-                      <p className={`font-semibold text-sm ${log.type === 'credit' ? 'text-green-600' : 'text-red-500'}`}>
-                        {log.type === 'credit' ? '+' : '-'}{formatRupiah(log.amount)}
-                      </p>
-                    </div>
+              <div>
+                <label htmlFor="withdraw-bank" className={labelClass}>Nama Bank</label>
+                <select
+                  id="withdraw-bank"
+                  name="bank_name"
+                  value={withdrawForm.bank_name}
+                  onChange={(e) => setWithdrawForm({ ...withdrawForm, bank_name: e.target.value })}
+                  className={inputClass}
+                  required
+                >
+                  <option value="">Pilih Bank</option>
+                  {['BCA', 'BNI', 'BRI', 'Mandiri', 'BSI', 'DANA', 'OVO', 'GoPay'].map((b) => (
+                    <option key={b} value={b}>{b}</option>
                   ))}
-                </div>
-              )}
-            </div>
+                </select>
+              </div>
+              <div>
+                <label htmlFor="withdraw-account" className={labelClass}>Nomor Rekening / Akun</label>
+                <input
+                  id="withdraw-account"
+                  name="bank_account"
+                  type="text"
+                  placeholder="Masukkan nomor rekening"
+                  value={withdrawForm.bank_account}
+                  onChange={(e) => setWithdrawForm({ ...withdrawForm, bank_account: e.target.value })}
+                  className={inputClass}
+                  required
+                />
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button type="submit" className="flex-1 bg-blue-600 text-white py-2.5 rounded-xl font-semibold text-sm hover:bg-blue-700 transition-colors">
+                  Ajukan Penarikan
+                </button>
+                <button type="button" onClick={() => setShowWithdraw(false)} className="flex-1 border border-gray-200 dark:border-blue-900/40 text-gray-700 dark:text-blue-200 py-2.5 rounded-xl font-semibold text-sm hover:bg-gray-50 dark:hover:bg-blue-900/20 transition-colors">
+                  Batal
+                </button>
+              </div>
+            </form>
           </div>
-        </main>
+        )}
+
+        <div className="bg-white dark:bg-[#0d1526] rounded-2xl border border-gray-100 dark:border-blue-900/30 shadow-sm">
+          <div className="p-5 md:p-6 border-b border-gray-100 dark:border-blue-900/30">
+            <h2 className="font-semibold text-gray-900 dark:text-white">Riwayat Saldo</h2>
+          </div>
+          {loading ? (
+            <div className="p-6 text-center text-gray-400 dark:text-blue-300/50">Memuat...</div>
+          ) : history.length === 0 ? (
+            <div className="p-10 text-center">
+              <div className="flex justify-center mb-3">
+                <Inbox size={40} className="text-gray-300 dark:text-blue-900/60" />
+              </div>
+              <p className="text-gray-400 dark:text-blue-300/50">Belum ada riwayat saldo</p>
+            </div>
+          ) : (
+            <div className="divide-y divide-gray-100 dark:divide-blue-900/20">
+              {history.map((log) => (
+                <div key={log.id} className="flex items-center justify-between px-5 md:px-6 py-4">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 ${log.type === 'credit' ? 'bg-green-100 dark:bg-green-900/20' : 'bg-red-100 dark:bg-red-900/20'}`}>
+                      {log.type === 'credit'
+                        ? <ArrowUpRight size={16} className="text-green-600 dark:text-green-400" />
+                        : <ArrowDownLeft size={16} className="text-red-500 dark:text-red-400" />
+                      }
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-gray-900 dark:text-gray-200 truncate">{log.description}</p>
+                      <p className="text-xs text-gray-400 dark:text-blue-300/50">{new Date(log.created_at).toLocaleDateString('id-ID')}</p>
+                    </div>
+                  </div>
+                  <p className={`font-semibold text-sm shrink-0 ml-3 ${log.type === 'credit' ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`}>
+                    {log.type === 'credit' ? '+' : '-'}{formatRupiah(log.amount)}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </Layout>
   )
 }
